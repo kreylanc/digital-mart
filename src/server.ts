@@ -3,10 +3,12 @@ import { getPayloadClient } from "./get-payload";
 import { nextApp, nextHandler } from "./next-utils";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { appRouter } from "./trpc";
+import { inferAsyncReturnType } from "@trpc/server";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
+// defining the context type for tRPC
 const createContext = ({
   req,
   res,
@@ -14,6 +16,8 @@ const createContext = ({
   req,
   res,
 });
+// infer context type
+export type ExpressContext = inferAsyncReturnType<typeof createContext>;
 
 const start = async () => {
   // call payload to initialize the CMS

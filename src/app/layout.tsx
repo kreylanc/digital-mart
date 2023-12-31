@@ -25,8 +25,10 @@ export default function RootLayout({
       >
         <Providers>
           <Navbar />
-          <main className="relative flex flex-col min-h-svh">{children}</main>
-          <Toaster />
+          <main className="relative flex flex-col min-h-[calc(100svh-4rem)]">
+            {children}
+          </main>
+          <Toaster richColors />
         </Providers>
       </body>
     </html>
