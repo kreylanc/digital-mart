@@ -1,6 +1,9 @@
 import { publicProcedure } from "./../trpc";
 import { router } from "../trpc";
-import { credValidator } from "../../lib/validators/acc-credential-validation";
+import {
+  registerValidator,
+  signinValidator,
+} from "../../lib/validators/acc-credential-validation";
 import { getPayloadClient } from "../../get-payload";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -10,7 +13,7 @@ export const authRouter = router({
       check for input validation
      */
   createUser: publicProcedure
-    .input(credValidator)
+    .input(registerValidator)
     .mutation(async ({ input }) => {
       // destruct the input
       const { email, password } = input;
@@ -64,5 +67,36 @@ export const authRouter = router({
       if (!verified) throw new TRPCError({ code: "UNAUTHORIZED" });
 
       return { success: true };
+    }),
+
+  /* For signing in user */
+  signIn: publicProcedure
+    .input(signinValidator)
+    .mutation(async ({ input, ctx }) => {
+      const { email, password } = input;
+      const { res } = ctx;
+
+      const payload = await getPayloadClient();
+
+      try {
+        // using payload login operation
+        // returns the user and token
+        await payload.login({
+          collection: "users",
+          data: {
+            email,
+            password,
+          },
+          // pass express res to set the cookie for authentication
+          res,
+        });
+
+        return { success: true };
+      } catch (error) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Password and email does not match.",
+        });
+      }
     }),
 });
