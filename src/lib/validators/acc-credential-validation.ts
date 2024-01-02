@@ -18,7 +18,7 @@ export const registerValidator = z
 
 export const signinValidator = z.object({
   email: z.string().email({ message: "Invalid email." }),
-  password: z.string(),
+  password: z.string().min(1, { message: "Password is required." }),
 });
 
 // get types from zod schema to pass it on react-hook useForm
