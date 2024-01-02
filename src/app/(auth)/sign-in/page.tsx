@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -58,11 +58,10 @@ const SignUp = () => {
     onSuccess: () => {
       toast.success("Signed in successfuly");
 
-      router.refresh(); // refresh the page
-
       // if origin url exists, redirect user to that page
       if (origin) {
         router.push(`/${origin}`);
+        router.refresh(); // refresh the page
 
         return;
       }
@@ -73,6 +72,7 @@ const SignUp = () => {
       }
 
       router.push("/");
+      router.refresh(); // refresh the page
     },
   });
 
@@ -140,7 +140,9 @@ const SignUp = () => {
               </p>
             )}
           </div>
-          <Button className="w-full mt-4">Sign in</Button>
+          <Button className="w-full mt-4">
+            {isLoading ? <Loader2 className="animate-spin" /> : "Sign in"}
+          </Button>
         </form>
 
         <div className="relative">
