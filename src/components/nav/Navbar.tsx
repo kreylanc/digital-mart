@@ -4,9 +4,13 @@ import { Icons } from "../Icons";
 import NavItems from "./NavItems";
 import { buttonVariants } from "../ui/button";
 import Cart from "../Cart";
+import { getServerSideUser } from "@/lib/payload-utils";
+import { cookies } from "next/headers";
+import UserInfoNav from "./UserInfoNav";
 
-const Navbar = () => {
-  const user = "sa";
+const Navbar = async () => {
+  const nextCookie = cookies();
+  const { user } = await getServerSideUser(nextCookie);
   return (
     <header className="sticky top-0 z-50 bg-white inset-x-0  h-16">
       <MaxWidthWrapper>
@@ -25,7 +29,7 @@ const Navbar = () => {
             <div className="hidden ml-auto md:flex gap-x-6 md:flex-1 md:items-center justify-end">
               {user ? null : (
                 <Link
-                  href="sign-in"
+                  href="/sign-in"
                   className={buttonVariants({ variant: "default" })}
                 >
                   Sign in
@@ -37,9 +41,11 @@ const Navbar = () => {
                   aria-hidden="true"
                 ></span>
               )}
-              {user ? null : (
+              {user ? (
+                <UserInfoNav user={user} />
+              ) : (
                 <Link
-                  href="sign-up"
+                  href="/sign-up"
                   className={buttonVariants({ variant: "ghost" })}
                 >
                   Register
