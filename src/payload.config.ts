@@ -5,6 +5,10 @@ import { slateEditor } from "@payloadcms/richtext-slate";
 import path from "path";
 import { buildConfig } from "payload/config";
 import { Users } from "./payload/collections/users";
+import { Products } from "./payload/collections/products/products";
+import { Media } from "./payload/collections/media";
+import { ProductFile } from "./payload/collections/products/productFile";
+import { Orders } from "./payload/collections/orders";
 
 dotenv.config({
   path: path.join(__dirname, "../.env"),
@@ -22,7 +26,7 @@ export default buildConfig({
     },
   },
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || "",
-  collections: [Users],
+  collections: [Users, Products, Media, ProductFile, Orders],
   routes: {
     // set the routing of admin panel to "/sell" instead of default "/admin"
     admin: "/sell",
