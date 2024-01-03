@@ -9,6 +9,10 @@
 export interface Config {
   collections: {
     users: User;
+    products: Product;
+    media: Media;
+    productFile: ProductFile;
+    orders: Order;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -24,9 +28,88 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password: string | null;
+}
+export interface Product {
+  id: string;
+  userId?: (string | null) | User;
+  name: string;
+  description: string;
+  price: number;
+  category: 'ui_kits' | 'icons';
+  images: {
+    image: string | Media;
+    id?: string | null;
+  }[];
+  productFile: string | ProductFile;
+  status: 'pending' | 'approved' | 'denied';
+  priceId?: string | null;
+  stripeId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface Media {
+  id: string;
+  alt: string;
+  userId?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  sizes?: {
+    thumnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    tablet?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+export interface ProductFile {
+  id: string;
+  userId?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+export interface Order {
+  id: string;
+  userId: string | User;
+  _isPaid: boolean;
+  productId: (string | Product)[];
+  updatedAt: string;
+  createdAt: string;
 }
 export interface PayloadPreference {
   id: string;
