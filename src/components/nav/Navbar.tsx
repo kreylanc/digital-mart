@@ -3,7 +3,7 @@ import MaxWidthWrapper from "../MaxWidthWrapper";
 import { Icons } from "../Icons";
 import NavItems from "./NavItems";
 import { buttonVariants } from "../ui/button";
-import Cart from "../Cart";
+import Cart from "../cart/Cart";
 import { getServerSideUser } from "@/lib/payload-utils";
 import { cookies } from "next/headers";
 import UserInfoNav from "./UserInfoNav";
@@ -51,18 +51,12 @@ const Navbar = async () => {
                   Register
                 </Link>
               )}
-              {user ? (
-                <span
-                  className="h-6 w-px bg-gray-200"
-                  aria-hidden="true"
-                ></span>
-              ) : null}
 
-              {user ? (
-                <div className="flow-root">
-                  <Cart />
-                </div>
-              ) : null}
+              <span className="h-6 w-px bg-gray-200" aria-hidden="true"></span>
+
+              <div className="flow-root">
+                <Cart />
+              </div>
             </div>
           </div>
         </div>
