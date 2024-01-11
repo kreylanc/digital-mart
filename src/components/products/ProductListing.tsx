@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { cn, formatPrice } from "@/lib/utils";
 import Link from "next/link";
-import { PRODUCT_CATEGORIES } from "@/config";
 import ImageSlider from "../ImageSlider";
+import { getLabel } from "@/lib/getLabel";
 
 type ProductListingProps = {
   product: Product | null;
@@ -27,9 +27,6 @@ const ProductListing = ({ product, index }: ProductListingProps) => {
   }, [index]);
 
   // Get the category Label using the value in product
-  const label = PRODUCT_CATEGORIES.find(
-    ({ value }) => value === product?.category
-  )?.label;
 
   if (!product || !isVisible) return <ProductPlaceholder />;
 
@@ -42,6 +39,7 @@ const ProductListing = ({ product, index }: ProductListingProps) => {
       )
       .filter(Boolean);
 
+    const label = getLabel(product?.category);
     return (
       <Link
         href={`/product/${product.id}`}
