@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import {
   Carousel,
@@ -39,26 +41,26 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
     "active:scale-[0.97] grid absolute top-1/2 -translate-y-1/2 opacity-100 hover:scale105";
   const inactiveStyle = "hidden text-slate-400";
   return (
-    <Carousel className="group" setApi={setApi}>
-      <CarouselContent>
+    <Carousel className="group overflow-hidden rounded-lg" setApi={setApi}>
+      <CarouselContent className="rounded-lg">
         {images.map((image, i) => (
           <CarouselItem key={i} className="aspect-square">
-            <div className="relative w-full h-full">
+            <div className="relative  w-full h-full">
               <Image
                 src={image.url}
                 alt={image.alt ?? "product image"}
                 fill
                 loading="eager"
-                className="-z-10 object-cover w-full h-full object-center"
+                className="-z-10 object-cover bg-secondary w-full h-full object-center"
               />
             </div>
           </CarouselItem>
         ))}
       </CarouselContent>
-      <div className="absolute left-0 top-1/2 opacity-0 transition-opacity group-hover:opacity-100">
+      <div className="absolute left-0 top-1/2 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
         <CarouselPrevious className="left-2" />
       </div>
-      <div className="absolute opacity-0 right-0 top-1/2 transition-opacity group-hover:opacity-100">
+      <div className="absolute opacity-0 right-0 top-1/2 transition-opacity group-focus-within:opacity-100  group-focus:opacity-100 group-hover:opacity-100">
         <CarouselNext className="right-2" />
       </div>
       <div className="absolute bottom-4 w-full flex items-center justify-center gap-x-1 pointer-events-none">
@@ -66,7 +68,7 @@ const ImageSlider = ({ images }: ImageSliderProps) => {
           <span
             key={index}
             className={cn(
-              "inset-0 h-2 w-2 rounded-full  bg-primary/65 transition scale-90",
+              "inset-0 h-2 w-2 rounded-full bg-zinc-400 transition scale-90",
               {
                 "scale-100 bg-white": current === index,
               }
