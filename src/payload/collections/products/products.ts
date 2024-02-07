@@ -1,13 +1,21 @@
+import { stripe } from "./../../../lib/stripe";
+import { Product } from "./../../../payload-types";
 import { appendUser } from "./../../hooks/appendUser";
 import { PRODUCT_CATEGORIES } from "../../../config";
 import { CollectionConfig } from "payload/types";
+import { syncUser } from "./../../hooks/syncUser";
+import { adminOrHasAccess } from "./access/adminOrHasAccess";
 
 export const Products: CollectionConfig = {
   slug: "products",
   admin: {
     useAsTitle: "name",
   },
-  access: {},
+  access: {
+    read: adminOrHasAccess,
+    update: adminOrHasAccess,
+    delete: adminOrHasAccess,
+  },
   fields: [
     {
       // field for the user who added the product
@@ -127,6 +135,50 @@ export const Products: CollectionConfig = {
     },
   ],
   hooks: {
-    beforeChange: [appendUser],
+    afterChange: [syncUser],
+    beforeChange: [
+      appendUser,
+      async (args) => {
+        // check if the product is being creaated or updated
+        if (args.operation === "create") {
+          // if creating new one create product in Strip
+          const data = args.data as Product;
+
+          // Create product in stripe to get id for price and stripe
+          const createdProduct = await stripe.products.create({
+            name: data.name,
+            default_price_data: {
+              currency: "USD",
+              unit_amount: Math.round(data.price * 100),
+            },
+          });
+          // passing the data returned from Strip to our db
+          const updated: Product = {
+            ...data, // spread our original data
+            priceId: createdProduct.default_price as string,
+            stripeId: createdProduct.id,
+          };
+
+          return updated;
+        } else if (args.operation === "update") {
+          // if updating the product then update the existing product in Stripe
+          const data = args.data as Product;
+
+          // Create product in stripe to get id for price and stripe
+          const updatedProduct = await stripe.products.update(data.stripeId!, {
+            name: data.name,
+            default_price: data.priceId!,
+          });
+          // passing the data returned from Strip to our db
+          const updated: Product = {
+            ...data, // spread our original data
+            priceId: updatedProduct.default_price as string,
+            stripeId: updatedProduct.id,
+          };
+
+          return updated;
+        }
+      },
+    ],
   },
 };
