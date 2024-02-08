@@ -4,10 +4,13 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
 import { getLabel } from "@/lib/getLabel";
 import { cn, formatPrice } from "@/lib/utils";
+import { trpc } from "@/trpc/client";
 import { Check, Loader2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const CartPage = () => {
   // get states from zustand cart state
@@ -15,9 +18,32 @@ const CartPage = () => {
   // state for when the component is mounted
   const [isMounted, setIsMounted] = useState(false);
 
+  // Initialize useRouter
+  const router = useRouter();
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // call stripe checkout session end point
+  const { mutate: createCheckoutSession, isLoading } =
+    trpc.payment.createSession.useMutation({
+      onSuccess: ({ url }) => {
+        if (url) {
+          router.push(url);
+        }
+      },
+      onError: (err) => {
+        if (err.data?.code === "UNAUTHORIZED") {
+          toast.error(err.message);
+        } else {
+          toast.error("Something went wrong. Please try again later.");
+        }
+      },
+    });
+
+  // to pass as an input when calling the API
+  const productIds = items.map(({ product }) => product.id);
 
   const cartTotal = items.reduce(
     (total, { product }) => total + product.price,
@@ -32,7 +58,7 @@ const CartPage = () => {
         Shopping Cart
       </h1>
       <div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
-        {/* Product Item details i.e price, image, name, stc */}
+        {/* Product Item details i.e price, image, name, etc */}
         <div
           className={cn("lg:col-span-7", {
             "rounded-lg border-2 border-dashed border-zinc-200 p-4 sm:p-12":
@@ -158,8 +184,20 @@ const CartPage = () => {
             </div>
           </div>
           <div className="mt-6">
-            <Button className="w-full" size="lg">
-              Checkout
+            <Button
+              onClick={() => createCheckoutSession({ productIds })}
+              className="w-full"
+              size="lg"
+              disabled={items.length === 0 || isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin mr-1.5" size={16} />
+                  <span>Checkout</span>
+                </>
+              ) : (
+                "Checkout"
+              )}
             </Button>
           </div>
         </section>
