@@ -49,7 +49,7 @@ export const stripeWebhookHandler = async (
     // get the user details using the userID from the metadata passsed to Stripe
     const user = await payload.findByID({
       collection: "users",
-      id: session.metadata.userID,
+      id: session.metadata.userId,
     });
 
     // if user doesn't exist respond with an error
