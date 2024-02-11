@@ -7,6 +7,7 @@ import Cart from "../cart/Cart";
 import { getServerSideUser } from "@/lib/payload-utils";
 import { cookies } from "next/headers";
 import UserInfoNav from "./UserInfoNav";
+import MobileNav from "./MobileNav";
 
 const Navbar = async () => {
   const nextCookie = cookies();
@@ -14,10 +15,8 @@ const Navbar = async () => {
   return (
     <header className="sticky top-0 z-50 bg-white inset-x-0  h-16">
       <MaxWidthWrapper>
-        <div className="border-b border-slate-300">
+        <nav className="border-b border-slate-300">
           <div className="flex h-16 items-center">
-            {/* TODO: Mobile Nav here */}
-
             <div className="flex gap-x-3">
               <Link href="/">
                 <Icons.logo className="h-10 w-10" />
@@ -26,6 +25,11 @@ const Navbar = async () => {
                 <NavItems />
               </div>
             </div>
+            {/* Mobile Nav */}
+            <MobileNav />
+
+            {/* Default Nav */}
+
             <div className="hidden ml-auto md:flex gap-x-6 md:flex-1 md:items-center justify-end">
               {user ? null : (
                 <Link
@@ -59,7 +63,7 @@ const Navbar = async () => {
               </div>
             </div>
           </div>
-        </div>
+        </nav>
       </MaxWidthWrapper>
     </header>
   );

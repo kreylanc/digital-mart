@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/nav/Navbar";
 import { Toaster } from "sonner";
 import Providers from "@/components/Providers";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
           <main className="relative flex flex-col min-h-[calc(100svh-4rem)]">
             {children}
           </main>
+          <Footer />
           <Toaster richColors />
         </Providers>
       </body>
