@@ -8,6 +8,10 @@ const nextConfig = {
         port: "3000",
         protocol: "http",
       },
+      {
+        hostname: "digital-mart-production-c75c.up.railway.app",
+        protocol: "https",
+      },
     ],
   },
 };
