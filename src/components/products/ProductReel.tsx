@@ -9,7 +9,7 @@ import ProductListing from "./ProductListing";
 type ProductReelProps = {
   title: string;
   subtitle?: string;
-  href: string;
+  href?: string;
   query: TQueryValidator;
 };
 
